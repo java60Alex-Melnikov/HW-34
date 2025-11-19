@@ -1,3 +1,4 @@
+path: datasets
 train: ../datasets/train/images
 val: ../datasets/val/images
 nc: 2

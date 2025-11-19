@@ -4,7 +4,7 @@ import random
 import shutil
 from pathlib import Path
 
-IMG_SIZE = 256
+IMG_SIZE = 640
 CLASSES = {'circle': 0, 'square': 1}
 DATASET_ROOT = Path('datasets')
 RANDOM_SEED = random.randint(0, 10000)
@@ -42,7 +42,8 @@ def generate_subset(subset_name: str, counts: dict[str, int]):
     
     for shape_type, count in counts.items():
         for i in range(count):
-            img = np.zeros((IMG_SIZE, IMG_SIZE, 3), dtype=np.uint8)
+            bg_color = (255, 255, 255)
+            img = np.full((IMG_SIZE, IMG_SIZE, 3), bg_color, dtype=np.uint8)
             x_c, y_c, w, h = draw_shape(img, shape_type)
             class_id = CLASSES[shape_type]
             filename = f"{subset_name}_{shape_type}_{i}"
