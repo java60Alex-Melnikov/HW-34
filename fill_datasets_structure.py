@@ -35,3 +35,30 @@ def draw_shape(img: np.ndarray, shape_type: str) -> tuple[float, float, float, f
         bbox_w, bbox_h = size, size
 
     return x / w, y / h, bbox_w / w, bbox_h / h
+
+def generate_subset(subset_name: str, counts: dict[str, int]):
+    img_dir = DATASET_ROOT / subset_name / 'images'
+    lbl_dir = DATASET_ROOT / subset_name / 'labels'
+    
+    for shape_type, count in counts.items():
+        for i in range(count):
+            img = np.zeros((IMG_SIZE, IMG_SIZE, 3), dtype=np.uint8)
+            x_c, y_c, w, h = draw_shape(img, shape_type)
+            class_id = CLASSES[shape_type]
+            filename = f"{subset_name}_{shape_type}_{i}"
+            cv2.imwrite(str(img_dir / f"{filename}.jpg"), img)
+            label_path = lbl_dir / f"{filename}.txt"
+            label_path.write_text(f"{class_id} {x_c} {y_c} {w} {h}\n", encoding='utf-8')
+            
+    print(f"Generated {subset_name} data: {counts}")
+
+def main():
+    random.seed(RANDOM_SEED) 
+    create_directories()
+    generate_subset('train', {'circle': 30, 'square': 30})
+    generate_subset('val', {'circle': 3, 'square': 3})
+    print(f"\nDataset created successfully in '{DATASET_ROOT}'")
+    print(f"Random seed: {RANDOM_SEED}")
+
+if __name__ == "__main__":
+    main()
